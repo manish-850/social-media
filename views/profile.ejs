@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body>
+    <div class="main h-screen w-full bg-zinc-900 text-white flex gap-5 px-10">
+        <div class="w-1/4 h-full px-2 border-r-2 border-zinc-700 py-5">
+            <h1 class="text-2xl font-medium mb-5">Hey, <%= user.name %> 👋🏼</h1>
+            <form action="/register" method="post">
+                <input class="bg-zinc-800 px-4 py-2 rounded outline-none" type="text" placeholder="Write Something" name="post">
+                <button class="bg-red-500 px-4 py-2 rounded cursor-pointer" type="submit">Post</button>
+            </form>
+        </div>
+        <div class="w-2/4 h-full py-5"></div>
+        <div class="w-1/4 h-full border-l-2 border-zinc-700 py-5">
+            <div class="w-full flex justify-end">
+                <a class="bg-red-500 px-4 py-2 rounded cursor-pointer " href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
