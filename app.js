@@ -3,8 +3,10 @@ const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const UserModel = require('./models/user');
+const postModel = require('./models/post');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+const { decode } = require('punycode');
 
 
 app.set('view engine', 'ejs');
@@ -14,7 +16,16 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-    res.render('index');
+    const { token } = req.cookies;
+    if (token) {
+        jwt.verify(token, 'shhhhh', function (err, decoded) {
+            if (!err) {
+                const { email, userid } = decoded;
+                res.redirect(`/profile/${userid}`)
+            }
+        });
+    }
+    else res.render('index');
 });
 
 app.post('/register', async (req, res) => {
@@ -30,7 +41,7 @@ app.post('/register', async (req, res) => {
                     password: hash
                 })
 
-                const token = jwt.sign(email, 'shhhhh');
+                const token = jwt.sign({email,userid:user._id}, 'shhhhh');
                 res.cookie("token", token)
                 res.redirect(`/profile/${user._id}`);
             });
@@ -41,18 +52,29 @@ app.post('/register', async (req, res) => {
     }
 });
 
-app.get('/login', (req, res) => {
-    res.render('login');
+app.get('/login',(req, res) => {
+
+    const { token } = req.cookies;
+    if (token) {
+        jwt.verify(token, 'shhhhh', function (err, decoded) {
+            if (!err) {
+                const {email,userid} = decoded;
+                res.redirect(`/profile/${userid}`)
+            }
+        });
+    }
+
+    else res.render('login');
 })
 
 app.post("/login",async (req,res)=>{
     const {email,password} = req.body;
     const user = await UserModel.findOne({email});
-    if(!user) res.send("Something went wrong");
+    if(!user) return res.send("Something went wrong");
     else{
         bcrypt.compare(password, user.password, function (err, result) {
             if(result){
-                const token = jwt.sign(email, 'shhhhh');
+                const token = jwt.sign({ email, userid: user._id }, 'shhhhh');
                 res.cookie("token", token)
                 res.redirect(`/profile/${user._id}`);
             }
@@ -63,15 +85,47 @@ app.post("/login",async (req,res)=>{
     }
 })
 
-app.get('/profile/:id', async (req, res) => {
-    const user = await UserModel.findOne({ _id: req.params.id })
-    res.render("profile", { user })
+app.get('/profile', isLoggedIn, async (req, res) => {
+    res.redirect(`/profile/${req.user.userid}`)
 })
 
-app.get("/logout",(req,res)=>{
-    res.cookie("token", "");
-    res.send("Successfully loged out");
+app.get('/profile/:id', isLoggedIn, async (req, res) => {
+    const user = await UserModel.findOne({ _id: req.params.id })
+    const posts = await postModel
+        .find()
+        .populate("user"); 
+    res.render("profile", { user, posts });
+})
+app.post('/profile/:id/post', isLoggedIn, async (req, res) => {
+    const post = await postModel.create({
+        body: req.body.postBody,
+        user: req.user.userid
+    })
+    const user = await UserModel.findOne({ _id: req.params.id })
+    user.post.push(post._id);
+    await user.save();
+    // const posts = await postModel.find()
+    // res.render("profile", { user, posts }); 
+    res.redirect(`/profile/${user._id}`)   
+})
+app.get("/logout", isLoggedIn,(req,res)=>{
+    res.clearCookie("token");
     res.redirect("/login");
 })
+
+function isLoggedIn(req,res,next){
+    if(!req.cookies.token) return res.redirect("/login");
+    else{
+        const {token} = req.cookies;
+        jwt.verify(token, 'shhhhh', function (err, decoded) {
+            if(!err) {
+                req.user = decoded;
+                next()
+            }
+        });
+    }
+}
+
+
 
 app.listen(3000)

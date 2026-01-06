@@ -4,26 +4,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account</title>
+    <title>Profile | <%= user.username %>
+    </title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.8.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
 <body>
     <div class="main h-screen w-full bg-zinc-900 text-white flex gap-5 px-10">
-        <div class="w-1/4 h-full px-2 border-r-2 border-zinc-700 py-5">
-            <h1 class="text-2xl font-medium mb-5">Hey, <%= user.name %> 👋🏼</h1>
-            <form action="/register" method="post">
-                <input class="bg-zinc-800 px-4 py-2 rounded outline-none" type="text" placeholder="Write Something" name="post">
-                <button class="bg-red-500 px-4 py-2 rounded cursor-pointer" type="submit">Post</button>
+        <div class="w-1/4 h-full left px-2 border-r-2 border-zinc-700 py-5 overflow-auto">
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-3 mr-[-3px] rounded-full cursor-pointer " href="/logout"><i
+                            class="ri-logout-box-r-line"></i></a>
+                </div>
+            </div>
+            <form class="bg-zinc-800 py-3 rounded-md" action="/profile/<%= user._id %>/post" method="post">
+                <input required class="border-zinc-800 border px-4 py-2 rounded outline-none" type="text"
+                    placeholder="Write Something" name="postBody" autocomplete="off">
+                <button class="bg-red-500 px-4 py-2 rounded-md cursor-pointer" type="submit">Post</button>
             </form>
+            <div class="btns flex flex-col mt-5 gap-5">
+                <button class="bg-zinc-800 text-xl uppercase font-medium w-full py-4 rounded-md cursor-pointer text-left pl-5" type="submit">Profile</button>
+                <button class="bg-zinc-800 text-xl uppercase font-medium w-full py-4 rounded-md cursor-pointer text-left pl-5" type="submit">Bookmark</button>
+                <button class="bg-zinc-800 text-xl uppercase font-medium w-full py-4 rounded-md cursor-pointer text-left pl-5" type="submit">Notification</button>
+                <button class="bg-zinc-800 text-xl uppercase font-medium w-full py-4 rounded-md cursor-pointer text-left pl-5" type="submit">Chat</button>
+
+            </div>
         </div>
-        <div class="w-2/4 h-full py-5"></div>
-        <div class="w-1/4 h-full border-l-2 border-zinc-700 py-5">
-            <div class="w-full flex justify-end">
-                <a class="bg-red-500 px-4 py-2 rounded cursor-pointer " href="/logout">Logout</a>
+        <div class="center w-2/4 h-full overflow-auto">
+            <div class="posts py-5 w-full flex flex-col gap-5 items-center">
+                <% if(posts.length>0){ %>
+                    <% posts.reverse().forEach((post)=>{ %>
+                        <div class="post bg-zinc-800 w-[70%] p-5 rounded-md">
+                            <p class="text-sm text-red-500">@<%= post.user.username %>
+                            </p>
+                            <p class="text-zinc-400">
+                                <%= post.body %>
+                            </p>
+                            <div class="btns flex items-center gap-1 mt-5">
+                                <i class="ri-heart-3-line cursor-pointer active:scale-95"></i>
+                                <small>0</small>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else{ %>
+                                <h3>No post</h3>
+                                <% } %>
+            </div>
+        </div>
+        <div class="w-1/4 right h-full border-l-2 border-zinc-700 py-5 px-2 overflow-auto">
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="/logout">Follow</a>
+                </div>
+            </div>
+            <div class="profile-info bg-zinc-800 flex items-center px-5 py-3 rounded-md justify-between mb-5">
+                <div class="flex gap-2">
+                    <div class="image h-[50px] w-[50px] rounded-full overflow-hidden ">
+                        <img src="https://i.pinimg.com/736x/4d/df/3d/4ddf3dc3f57777a826a5bd60dbcb89dc.jpg" alt="">
+                    </div>
+                    <div class="user-info">
+                        <h1 class="font-medium text-xl">
+                            <%= user.name %>
+                        </h1>
+                        <p class="text-zinc-500 text-sm mt-[-4px]">@<%= user.username %>
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <a class="bg-red-500 px-4 py-2 mr-[-3px] rounded-md cursor-pointer " href="#">Follow</a>
+                </div>
             </div>
         </div>
     </div>
+    <script src="/javascripts/script.js"></script>
 </body>
 
 </html>

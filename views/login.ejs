@@ -12,13 +12,14 @@
     <div class="main h-screen w-full bg-zinc-900 text-white p-10">
         <h1 class="text-3xl font-medium mb-5">Login Account</h1>
         <form action="/login" method="post">
-            <input class="bg-zinc-800 px-4 py-2 rounded outline-none" type="email" placeholder="Enter email"
+            <input autocomplete="off" required class="bg-zinc-800 px-4 py-2 rounded outline-none" type="email" placeholder="Enter email"
                 name="email">
-            <input class="bg-zinc-800 px-4 py-2 rounded outline-none" type="password" placeholder="Enter password"
+            <input autocomplete="off" required class="bg-zinc-800 px-4 py-2 rounded outline-none" type="password" placeholder="Enter password"
                 name="password">
             <button class="bg-red-500 px-4 py-2 rounded cursor-pointer" type="submit">Login</button>
         </form>
     </div>
+    <script src="/javascripts/script.js"></script>
 </body>
 
 </html>
