@@ -8,7 +8,6 @@ const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
 
-
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -94,7 +93,10 @@ app.get('/profile/:id', isLoggedIn, async (req, res) => {
     const posts = await postModel
         .find()
         .populate("user"); 
-    res.render("profile", { user, posts });
+    const users = await UserModel.find({
+        _id: { $ne: req.user.userid }
+    });    
+    res.render("profile", { user, posts,users });
 })
 app.post('/profile/:id/post', isLoggedIn, async (req, res) => {
     const post = await postModel.create({
@@ -103,9 +105,7 @@ app.post('/profile/:id/post', isLoggedIn, async (req, res) => {
     })
     const user = await UserModel.findOne({ _id: req.params.id })
     user.post.push(post._id);
-    await user.save();
-    // const posts = await postModel.find()
-    // res.render("profile", { user, posts }); 
+    await user.save(); 
     res.redirect(`/profile/${user._id}`)   
 })
 app.get("/logout", isLoggedIn,(req,res)=>{
@@ -113,17 +113,31 @@ app.get("/logout", isLoggedIn,(req,res)=>{
     res.redirect("/login");
 })
 
-function isLoggedIn(req,res,next){
-    if(!req.cookies.token) return res.redirect("/login");
-    else{
-        const {token} = req.cookies;
-        jwt.verify(token, 'shhhhh', function (err, decoded) {
-            if(!err) {
-                req.user = decoded;
-                next()
-            }
-        });
+app.get("/like/:postId", isLoggedIn, async (req,res)=>{
+    const post = await postModel.findById(req.params.postId);
+    if (!post.likes.includes(req.user.userid)) {
+        post.likes.push(req.user.userid);
     }
+    await post.save()
+    res.redirect(`/profile/${req.user.userid}`)
+})
+
+
+function isLoggedIn(req,res,next){
+    const token = req.cookies.token;
+    if (!token) return res.redirect("/login");
+
+    jwt.verify(token, 'shhhhh', (err, decoded) => {
+        if (err) return res.redirect("/login");
+
+        if (!decoded.userid) {
+            res.clearCookie("token");
+            return res.redirect("/login");
+        }
+
+        req.user = decoded;
+        next();
+    });
 }
 
 
