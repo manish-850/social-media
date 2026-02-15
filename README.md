@@ -24,13 +24,6 @@ https://social-media-n91w.onrender.com
 -   JavaScript
 -   CSS
 
-## Project Structure
-
-social-media/ ├── models/ \# Database models (future integration) ├──
-public/ \# Static assets (CSS, images) ├── views/ \# EJS templates ├──
-app.js \# Main server file ├── package.json \# Dependencies and scripts
-└── .gitignore
-
 ## Installation
 
 1.  Clone the repository:
