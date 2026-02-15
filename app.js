@@ -7,7 +7,7 @@ const postModel = require('./models/post');
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const { decode } = require('punycode');
-
+require("dotenv").config()
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +17,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', (req, res) => {
     const { token } = req.cookies;
     if (token) {
-        jwt.verify(token, 'shhhhh', function (err, decoded) {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, decoded) {
             if (!err) {
                 const { email, userid } = decoded;
                 res.redirect(`/profile/${userid}`)
@@ -40,7 +40,7 @@ app.post('/register', async (req, res) => {
                     password: hash
                 })
 
-                const token = jwt.sign({email,userid:user._id}, 'shhhhh');
+                const token = jwt.sign({email,userid:user._id}, process.env.JWT_SECRET_KEY);
                 res.cookie("token", token)
                 res.redirect(`/profile/${user._id}`);
             });
@@ -55,7 +55,7 @@ app.get('/login',(req, res) => {
 
     const { token } = req.cookies;
     if (token) {
-        jwt.verify(token, 'shhhhh', function (err, decoded) {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, function (err, decoded) {
             if (!err) {
                 const {email,userid} = decoded;
                 res.redirect(`/profile/${userid}`)
@@ -73,7 +73,7 @@ app.post("/login",async (req,res)=>{
     else{
         bcrypt.compare(password, user.password, function (err, result) {
             if(result){
-                const token = jwt.sign({ email, userid: user._id }, 'shhhhh');
+                const token = jwt.sign({ email, userid: user._id }, process.env.JWT_SECRET_KEY);
                 res.cookie("token", token)
                 res.redirect(`/profile/${user._id}`);
             }
@@ -127,7 +127,7 @@ function isLoggedIn(req,res,next){
     const token = req.cookies.token;
     if (!token) return res.redirect("/login");
 
-    jwt.verify(token, 'shhhhh', (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
         if (err) return res.redirect("/login");
 
         if (!decoded.userid) {
